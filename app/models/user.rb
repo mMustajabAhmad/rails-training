@@ -132,7 +132,7 @@ class User < ApplicationRecord
     
     #after_create -> {puts 'Congratulation'}
     
-    validates :name, presence: true
+    #validates :name, presence: true
 
     #calling another created class----
     #before_validation EnsureCountValue
@@ -203,12 +203,17 @@ class User < ApplicationRecord
     #     def log_user_saved_to_db
     #         puts "User saved to DB"
     #     end
-    after_commit { puts("this actually gets called third") }
-    after_commit { puts("this actually gets called second") }
-    after_commit { puts("this actually gets called first") }
-    after_commit { puts("this actually gets called fourth") }
+    # after_commit { puts("this actually gets called third") }
+    # after_commit { puts("this actually gets called second") }
+    # after_commit { puts("this actually gets called first") }
+    # after_commit { puts("this actually gets called fourth") }
     # config.active_record.run_after_transaction_callbacks_in_order_defined = false
+    
 
+    has_and_belongs_to_many :roles
+    
+    has_many :pictures, as: :imageable
+    
 end
 
 
