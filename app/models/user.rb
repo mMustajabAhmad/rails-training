@@ -18,7 +18,7 @@
 # end
 
 
-class User < ApplicationRecord
+#class User < ApplicationRecord
     #validates :name, presence: true
 
     #validates :email, confirmation: true
@@ -77,7 +77,7 @@ class User < ApplicationRecord
     # end
 
 
-end
+#end
 
 
 
@@ -116,3 +116,107 @@ end
 # allow_nil 
 # u = User.new(name: '') #false
 # u =  u = User.new(name: nil) #true
+
+####--------------CALLBACKS------------###
+
+
+#----Creating a separate class-----
+# class EnsureCountValue
+#     def self.before_validation(record)
+#         record.count = 0 if record.count.nil?
+#     end
+# end
+
+
+class User < ApplicationRecord
+    
+    #after_create -> {puts 'Congratulation'}
+    
+    validates :name, presence: true
+
+    #calling another created class----
+    #before_validation EnsureCountValue
+
+
+    #---Defining separate function-----
+    # before_validation :ensure_count_has_value
+   
+    # private
+    # def ensure_count_has_value
+    #     self.count = 0 if count.nil?
+    # end
+
+    #-----Defining one line call back-----
+    # before_validation do
+    #     self.count = 0 if count.nil?
+    # end
+
+    #----On Create----
+        #--will convert 'ALI' to 'Ali'
+    # before_validation :normalize_name, on: :create
+
+    # private 
+    # def normalize_name
+    #     self.name = name.downcase.titleize
+    # end
+
+
+    # after_initialize do |user|
+    #     puts 'Initialized an object'
+    # end
+
+    # after_find do |user|
+    #     puts 'Found an object'
+    # end
+
+    #--- updates the updated_at timestamp ---
+    # after_touch do |user|
+    #     puts 'Touched an object'
+    # end
+
+    # belongs_to :product, touch: true
+    # after_touch do
+    #     puts 'A book was touched'
+    # end
+    
+    # ---- abort execution -----
+    # after_touch do |user|
+    #     throw :abort
+    #     puts 'Touched an object'
+    # end
+    
+    #has_many :articles, dependent: :destroy
+
+    #--as create and update function defined with same name only the later will use the defined function and print
+    # after_create_commit :log_user_saved_to_db
+    # after_update_commit :log_user_saved_to_db
+
+    # private
+    #     def log_user_saved_to_db
+    #         puts 'User saved to DB'
+    #     end
+
+    #--to overcome this alias for both create and update after_save_commit 
+    # after_save_commit :log_user_saved_to_db
+
+    # private
+    #     def log_user_saved_to_db
+    #         puts "User saved to DB"
+    #     end
+    after_commit { puts("this actually gets called third") }
+    after_commit { puts("this actually gets called second") }
+    after_commit { puts("this actually gets called first") }
+    after_commit { puts("this actually gets called fourth") }
+    # config.active_record.run_after_transaction_callbacks_in_order_defined = false
+
+end
+
+
+
+# class Article < ApplicationRecord
+#     after_destroy :log_destroy_action
+  
+#     def log_destroy_action
+#       puts 'Article destroyed'
+#     end
+# end
